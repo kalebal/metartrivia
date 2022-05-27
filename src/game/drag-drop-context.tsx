@@ -19,6 +19,13 @@ const reorder = (list: Card[], startIndex: number, endIndex: number) => {
   return result
 }
 
+const getListStyle = (isDraggingOver: boolean) => ({
+  background: isDraggingOver ? 'lightblue' : 'lightgrey',
+  display: 'flex',
+  padding: 8,
+  overflow: 'auto',
+})
+
 export const DragDropList = () => {
   const [state, setState] = useState(initial)
 
@@ -38,9 +45,13 @@ export const DragDropList = () => {
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId="list">
-        {(provided) => (
-          <div ref={provided.innerRef} {...provided.droppableProps}>
+      <Droppable droppableId="list" direction="horizontal">
+        {(provided, snapshot) => (
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            style={getListStyle(snapshot.isDraggingOver)}
+          >
             {state.map((Card: Card, index: number) => (
               <CardItem Card={Card} index={index} key={Card.id} />
             ))}
