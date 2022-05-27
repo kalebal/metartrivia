@@ -1,47 +1,50 @@
 import React, { useState } from 'react'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
+import { Card, CardItem } from './item'
 
-const baseData = [
-  { id: 1, title: 'asdf' },
-  { id: 2, title: 'aqwer' },
-  { id: 3, title: 'dfgs' },
-  { id: 4, title: 'sdfgsdf' },
-]
+const initial = Array.from({ length: 10 }, (v, k) => k).map((k) => {
+  const custom: Card = {
+    id: `id-${k}`,
+    content: `Card ${k}`,
+  }
+
+  return custom
+})
+
+const reorder = (list: Card[], startIndex: number, endIndex: number) => {
+  const result = Array.from(list)
+  const [removed] = result.splice(startIndex, 1)
+  result.splice(endIndex, 0, removed)
+
+  return result
+}
+
 export const DragDropList = () => {
-  const [elements, setElements] = useState(baseData)
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const onDragEnd = () => {}
+  const [state, setState] = useState(initial)
+
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) {
+      return
+    }
+
+    if (result.destination.index === result.source.index) {
+      return
+    }
+
+    const Cards = reorder(state, result.source.index, result.destination.index)
+
+    setState(Cards)
+  }
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <div>Hello world</div>
-      <Droppable droppableId="droppable-1">
-        {(provided, snapshot) => (
-          <div
-            ref={provided.innerRef}
-            style={{
-              backgroundColor: snapshot.isDraggingOver ? 'blue' : 'grey',
-            }}
-            {...provided.droppableProps}
-          >
-            {provided.placeholder}
-            {elements.map((item, index) => (
-              <Draggable
-                draggableId={item.id.toString()}
-                key={item.id.toString()}
-                index={index}
-              >
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                  >
-                    {item.title}
-                  </div>
-                )}
-              </Draggable>
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <Droppable droppableId="list">
+        {(provided) => (
+          <div ref={provided.innerRef} {...provided.droppableProps}>
+            {state.map((Card: Card, index: number) => (
+              <CardItem Card={Card} index={index} key={Card.id} />
             ))}
+            {provided.placeholder}
           </div>
         )}
       </Droppable>
