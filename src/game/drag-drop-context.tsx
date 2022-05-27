@@ -2,29 +2,25 @@ import React, { useState } from 'react'
 import {
   DragDropContext,
   DraggableLocation,
-  Droppable,
   DropResult,
 } from 'react-beautiful-dnd'
-import { Card, CardItem } from './item'
+import { Deck } from './deck'
+import { Card } from './item'
+import { findCorrectSpot, reorder, validateMove } from './logic'
+import { Timeline } from './timeline'
+import { faker } from '@faker-js/faker'
 
 const getItems = (count = 5, offset = 0) => {
-  return Array.from({ length: count }, (v, k) => k).map((k) => ({
+  const array = Array.from({ length: count }, (v, k) => k).map((k) => ({
     id: `item-${k + offset}-${new Date().getTime()}`,
     content: `item ${k + offset}`,
+    year: faker.date.past(800).getFullYear(),
   }))
+
+  array.sort((a, b) => a.year - b.year)
+  return array
 }
 
-const reorder = (list: Card[], startIndex: number, endIndex: number) => {
-  const result = Array.from(list)
-  const [removed] = result.splice(startIndex, 1)
-  result.splice(endIndex, 0, removed)
-
-  return result
-}
-
-/**
- * Moves an item from one list to another list.
- */
 const move = (
   source: Card[],
   destination: Card[],
@@ -44,62 +40,39 @@ const move = (
   return result
 }
 
-const getListStyle = (isDraggingOver: boolean) => ({
-  background: isDraggingOver ? 'lightblue' : 'lightgrey',
-  display: 'flex',
-  padding: 8,
-  overflow: 'auto',
-})
-
 export const DragDropList = () => {
   const [state, setState] = useState([getItems(1), getItems(2, 1)])
 
   const handleDragEnd = (result: DropResult) => {
     const { source, destination } = result
-    if (!destination) {
+    if (!destination || destination.droppableId === 'deck') {
       return
     }
 
-    const sInd = +source.droppableId
-    const dInd = +destination.droppableId
-
-    if (sInd === dInd) {
-      const items = reorder(state[sInd], source.index, destination.index)
-      const newState = [...state]
-      newState[sInd] = items
-      console.log(newState)
-      setState(newState)
+    const dInd = destination.droppableId
+    console.log(destination)
+    const moved = move(state[0], state[1], source, destination)
+    const newState = [...state]
+    newState[0] = getItems(1, moved[dInd].length)
+    newState[1] = moved[dInd]
+    const isValid = validateMove(destination.index, newState[1])
+    if (!isValid) {
+      console.log('not valid')
+      const correctSpot = findCorrectSpot(
+        newState[1],
+        newState[1][destination.index].year
+      )
+      newState[1] = reorder(newState[1], destination.index, correctSpot)
     } else {
-      const result = move(state[sInd], state[dInd], source, destination)
-      console.log(result)
-      const newState = [...state]
-      newState[sInd] = result[sInd]
-      newState[dInd] = result[dInd]
-      if (!newState[0].length) {
-        newState[0].push(getItems(1, result[dInd].length)[0])
-      }
-      setState(newState)
+      console.log('valid!')
     }
+    setState(newState)
   }
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      {state.map((el, ind) => (
-        <Droppable key={ind} droppableId={`${ind}`} direction="horizontal">
-          {(provided, snapshot) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              style={getListStyle(snapshot.isDraggingOver)}
-            >
-              {el.map((Card: Card, index: number) => (
-                <CardItem Card={Card} index={index} key={Card.id} />
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      ))}
+      <Deck cards={state[0]} />
+      <Timeline cards={state[1]} />
     </DragDropContext>
   )
 }

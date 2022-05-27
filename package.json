@@ -46,6 +46,7 @@
     ]
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.1.0",
     "@types/react-beautiful-dnd": "^13.1.2",
     "@typescript-eslint/eslint-plugin": "^5.23.0",
     "@typescript-eslint/parser": "^5.23.0",

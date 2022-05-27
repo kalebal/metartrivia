@@ -4,6 +4,7 @@ import { Draggable } from 'react-beautiful-dnd'
 export type Card = {
   id: string
   content: string
+  year: number
 }
 
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
@@ -17,11 +18,17 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
 export type CardProps = {
   Card: Card
   index: number
+  disableDrag?: boolean
 }
 export const CardItem = (props: CardProps) => {
-  const { Card, index } = props
+  const { Card, index, disableDrag = false } = props
   return (
-    <Draggable draggableId={Card.id} index={index} key={Card.id}>
+    <Draggable
+      draggableId={Card.id}
+      index={index}
+      key={Card.id}
+      isDragDisabled={disableDrag}
+    >
       {(provided, snapshot) => (
         <div
           ref={provided.innerRef}
@@ -33,6 +40,8 @@ export const CardItem = (props: CardProps) => {
           )}
         >
           {Card.content}
+          {' - '}
+          {Card.year}
         </div>
       )}
     </Draggable>
