@@ -1,13 +1,7 @@
 import { Droppable } from 'react-beautiful-dnd'
-import React, { useState } from 'react'
+import React from 'react'
 import { Card, CardItem } from './item'
-
-const getListStyle = (isDraggingOver: boolean) => ({
-  background: isDraggingOver ? 'lightblue' : 'lightgrey',
-  display: 'flex',
-  padding: 8,
-  overflow: 'auto',
-})
+import { Paper } from '@mui/material'
 
 export type DeckProps = {
   cards: Card[]
@@ -17,18 +11,29 @@ export const Deck = (props: DeckProps) => {
 
   return (
     <Droppable key={0} droppableId="deck" direction="horizontal">
-      {(provided, snapshot) => (
-        <div
+      {(provided) => (
+        <Paper
           ref={provided.innerRef}
           {...provided.droppableProps}
-          style={getListStyle(snapshot.isDraggingOver)}
+          elevation={2}
         >
-          {cards.map((Card: Card, index: number) => (
-            <CardItem Card={Card} index={index} key={Card.id} />
-          ))}
-          {provided.placeholder}
-        </div>
+          <div style={deckStyle}>
+            {cards.map((Card: Card, index: number) => (
+              <CardItem Card={Card} index={index} key={Card.id} />
+            ))}
+            {provided.placeholder}
+          </div>
+        </Paper>
       )}
     </Droppable>
   )
+}
+
+const deckStyle = {
+  background: 'lightgreen',
+  display: 'flex',
+  padding: 8,
+  overflow: 'auto',
+
+  justifyContent: 'center',
 }

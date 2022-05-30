@@ -1,3 +1,4 @@
+import { DraggableLocation } from 'react-beautiful-dnd'
 import { Card } from './item'
 
 export const validateMove = (index: number, newArray: Card[]) => {
@@ -19,6 +20,25 @@ export const findCorrectSpot = (list: Card[], year: number) => {
     }
   }
   return list.length
+}
+
+export const move = (
+  source: Card[],
+  destination: Card[],
+  droppableSource: DraggableLocation,
+  droppableDestination: DraggableLocation
+) => {
+  const sourceClone = Array.from(source)
+  const destClone = Array.from(destination)
+  const [removed] = sourceClone.splice(droppableSource.index, 1)
+
+  destClone.splice(droppableDestination.index, 0, removed)
+
+  const result: Record<string, Card[]> = {}
+  result[droppableSource.droppableId] = sourceClone
+  result[droppableDestination.droppableId] = destClone
+
+  return result
 }
 
 export const reorder = (list: Card[], startIndex: number, endIndex: number) => {

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Draggable } from 'react-beautiful-dnd'
+import { Card as MuiCard } from '@mui/material'
 
 export type Card = {
   id: string
@@ -30,7 +31,8 @@ export const CardItem = (props: CardProps) => {
       isDragDisabled={disableDrag}
     >
       {(provided, snapshot) => (
-        <div
+        <MuiCard
+          variant="outlined"
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
@@ -42,7 +44,7 @@ export const CardItem = (props: CardProps) => {
           {Card.content}
           {' - '}
           {Card.year}
-        </div>
+        </MuiCard>
       )}
     </Draggable>
   )
