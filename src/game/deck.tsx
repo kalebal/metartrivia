@@ -4,10 +4,10 @@ import { Card, CardItem } from './item'
 import { Paper } from '@mui/material'
 
 export type DeckProps = {
-  cards: Card[]
+  card: Card
 }
 export const Deck = (props: DeckProps) => {
-  const { cards } = props
+  const { card } = props
 
   return (
     <Droppable key={0} droppableId="deck" direction="horizontal">
@@ -18,9 +18,7 @@ export const Deck = (props: DeckProps) => {
           elevation={2}
         >
           <div style={deckStyle}>
-            {cards.map((Card: Card, index: number) => (
-              <CardItem Card={Card} index={index} key={Card.id} />
-            ))}
+            <CardItem Card={card} index={0} key={card.id} />
             {provided.placeholder}
           </div>
         </Paper>

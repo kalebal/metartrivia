@@ -23,22 +23,18 @@ export const findCorrectSpot = (list: Card[], year: number) => {
 }
 
 export const move = (
-  source: Card[],
+  source: Card,
   destination: Card[],
   droppableSource: DraggableLocation,
   droppableDestination: DraggableLocation
 ) => {
-  const sourceClone = Array.from(source)
+  const sourceClone = source
   const destClone = Array.from(destination)
-  const [removed] = sourceClone.splice(droppableSource.index, 1)
+  const [removed] = [sourceClone]
 
   destClone.splice(droppableDestination.index, 0, removed)
 
-  const result: Record<string, Card[]> = {}
-  result[droppableSource.droppableId] = sourceClone
-  result[droppableDestination.droppableId] = destClone
-
-  return result
+  return destClone
 }
 
 export const reorder = (list: Card[], startIndex: number, endIndex: number) => {
