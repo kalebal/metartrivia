@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import { Deck } from './deck'
 import { Timeline } from './timeline'
