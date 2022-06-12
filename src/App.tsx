@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import './App.css'
 import { DragDropList } from './game/drag-drop-context'
 import { GameOver } from './game/game-over'
@@ -6,8 +6,9 @@ import { faker } from '@faker-js/faker'
 import { Card } from './game/item'
 import { DropResult } from 'react-beautiful-dnd'
 import { findCorrectSpot, move, reorder, validateMove } from './game/logic'
-import { gameMachine } from './game/gameMachine'
-import { useMachine } from '@xstate/react'
+import { useActor } from '@xstate/react'
+import { GlobalStateContext } from './context-provider'
+import { Welcome } from './game/welcome'
 
 const getItems = (count = 5, offset = 0) => {
   const array = Array.from({ length: count }, (v, k) => k).map(
@@ -24,23 +25,26 @@ const getItems = (count = 5, offset = 0) => {
 }
 
 export function App() {
-  const [lives, setLives] = useState(0)
-  const [streak, setStreak] = useState(0)
   const [timeline, setTimeline] = useState(getItems(1))
   const [placeHolder, setPlaceHolder] = useState(getItems(1, 1)[0])
+  const { gameService } = useContext(GlobalStateContext)
+  const { send } = gameService
+  const [state] = useActor(gameService)
   const handleReplay = () => {
-    setLives(3)
-    setTimeline(getItems(1))
-    setStreak(0)
+    send('REPLAY')
+  }
+
+  const handleStart = () => {
+    send('START')
   }
 
   const handleInvalidMove = () => {
-    setLives(lives - 1)
+    send('INVALID')
   }
 
   const handleValidMove = () => {
-    setPlaceHolder(getItems(1, streak + 2)[0])
-    setStreak(streak + 1)
+    send('VALID')
+    setPlaceHolder(getItems(1, state.context.totalMoves + 2)[0])
   }
 
   const handleMove = (result: DropResult) => {
@@ -69,16 +73,18 @@ export function App() {
     <div className="App">
       <header className="App-header">App</header>
       <div className="scoreboard">
-        {lives ? (
-          <>
-            <div> Lives: {lives}</div>
-            <div> Streak: {streak}</div>
-          </>
-        ) : (
+        {state.matches('gameover') ? (
           <GameOver onReplay={handleReplay} />
+        ) : state.matches('welcome') ? (
+          <Welcome onStart={handleStart} />
+        ) : (
+          <>
+            <div> Lives: {state.context.lives}</div>
+            <div> Streak: {state.context.streak}</div>
+          </>
         )}
       </div>
-      {lives && (
+      {state.context.lives && (
         <div className="board">
           <DragDropList
             timeline={timeline}

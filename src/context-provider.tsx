@@ -1,6 +1,6 @@
 import React, { createContext, FC } from 'react'
 import { useInterpret } from '@xstate/react'
-import { gameMachine } from './game/gameMachine'
+import { gameMachine } from './game/game-machine'
 import { InterpreterFrom } from 'xstate'
 
 export const GlobalStateContext = createContext({

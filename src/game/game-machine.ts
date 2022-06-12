@@ -1,9 +1,11 @@
 import { createMachine, assign } from 'xstate'
+import { Card } from './item'
 
 interface Context {
   lives: number
   streak: number
   totalMoves: number
+  timeline: Card[]
 }
 
 export const gameMachine = createMachine<Context>({
@@ -13,6 +15,7 @@ export const gameMachine = createMachine<Context>({
     lives: 3,
     streak: 0,
     totalMoves: 0,
+    timeline: [],
   },
   states: {
     welcome: {
@@ -28,6 +31,7 @@ export const gameMachine = createMachine<Context>({
             streak: () => 0,
             totalMoves: () => 0,
             lives: () => 3,
+            timeline: () => [] as Card[],
           }),
         },
       },
@@ -58,6 +62,7 @@ export const gameMachine = createMachine<Context>({
             lives: (context: Context) => context.lives - 1,
             streak: () => 0,
             totalMoves: (context: Context) => context.totalMoves + 1,
+            timeline: (context: Context) => context.timeline,
           }),
         },
       },
