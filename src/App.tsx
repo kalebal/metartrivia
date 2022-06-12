@@ -6,6 +6,8 @@ import { faker } from '@faker-js/faker'
 import { Card } from './game/item'
 import { DropResult } from 'react-beautiful-dnd'
 import { findCorrectSpot, move, reorder, validateMove } from './game/logic'
+import { gameMachine } from './game/gameMachine'
+import { useMachine } from '@xstate/react'
 
 const getItems = (count = 5, offset = 0) => {
   const array = Array.from({ length: count }, (v, k) => k).map(
@@ -21,7 +23,7 @@ const getItems = (count = 5, offset = 0) => {
   return array
 }
 
-function App() {
+export function App() {
   const [lives, setLives] = useState(0)
   const [streak, setStreak] = useState(0)
   const [timeline, setTimeline] = useState(getItems(1))

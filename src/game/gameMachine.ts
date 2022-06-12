@@ -6,7 +6,7 @@ interface Context {
   totalMoves: number
 }
 
-const fetchMachine = createMachine<Context>({
+export const gameMachine = createMachine<Context>({
   id: 'game',
   initial: 'welcome',
   context: {
