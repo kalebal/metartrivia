@@ -37,24 +37,30 @@ export const gameMachine = createMachine<Context>({
       },
     },
     idle: {
+      always: [
+        {
+          target: 'gameover',
+          cond: (context) => context.lives <= 0,
+        },
+      ],
       on: {
         MOVE: 'validating',
-        '': {
-          cond: (context) => context.lives <= 0,
-          target: 'gameover',
-        },
       },
     },
     validating: {
-      entry: 'validateMove',
+      // entry: 'validateMove',
       on: {
         VALID: {
           target: 'idle',
           cond: (context) => context.lives > 0,
-          actions: assign({
-            streak: (context) => context.streak + 1,
-            totalMoves: (context) => context.totalMoves + 1,
-          }),
+          actions: [
+            (context) => console.log(`Before: ${context.totalMoves}`),
+            assign({
+              totalMoves: (context) => context.totalMoves + 1,
+              streak: (context) => context.streak + 1,
+            }),
+            (context) => console.log(`After: ${context.totalMoves}`),
+          ],
         },
         INVALID: {
           target: 'idle',

@@ -28,23 +28,25 @@ export function App() {
   const [timeline, setTimeline] = useState(getItems(1))
   const [placeHolder, setPlaceHolder] = useState(getItems(1, 1)[0])
   const { gameService } = useContext(GlobalStateContext)
-  const { send } = gameService
+  // const { send } = gameService
+
   const [state] = useActor(gameService)
+  console.log(state.value)
   const handleReplay = () => {
-    send('REPLAY')
+    gameService.send('REPLAY')
   }
 
   const handleStart = () => {
-    send('START')
+    gameService.send('START')
   }
 
   const handleInvalidMove = () => {
-    send('INVALID')
+    gameService.send('INVALID')
   }
 
   const handleValidMove = () => {
-    send('VALID')
-    setPlaceHolder(getItems(1, state.context.totalMoves + 2)[0])
+    console.log('valid!')
+    gameService.send('VALID')
   }
 
   const handleMove = (result: DropResult) => {
@@ -52,6 +54,7 @@ export function App() {
     if (!destination || destination.droppableId === 'deck') {
       return
     }
+    gameService.send('MOVE')
     const newTimeline = move(placeHolder, timeline, source, destination)
     const isValid = validateMove(destination.index, newTimeline)
     if (!isValid) {
@@ -64,9 +67,9 @@ export function App() {
     } else {
       setTimeline(newTimeline)
       handleValidMove()
-      console.log('valid!')
       // TODO: show year
     }
+    setPlaceHolder(getItems(1, state.context.totalMoves + 2)[0])
   }
 
   return (
@@ -81,6 +84,8 @@ export function App() {
           <>
             <div> Lives: {state.context.lives}</div>
             <div> Streak: {state.context.streak}</div>
+            <div> Total Moves: {state.context.totalMoves}</div>
+            {/* <div> Current state: {state.toStrings()}</div> */}
           </>
         )}
       </div>
