@@ -2,36 +2,38 @@ import React, { useContext, useState } from 'react'
 import './App.css'
 import { DragDropList } from './game/drag-drop-context'
 import { GameOver } from './game/game-over'
-import { faker } from '@faker-js/faker'
 import { Card } from './game/item'
 import { DropResult } from 'react-beautiful-dnd'
 import { findCorrectSpot, move, reorder, validateMove } from './game/logic'
 import { useActor } from '@xstate/react'
 import { GlobalStateContext } from './context-provider'
 import { Welcome } from './game/welcome'
+import { mockItemIDs } from './model'
+import { TimelineObject } from './model/api/timeline-object'
+import { mockCardData } from './items/items'
+// import { useItems } from './model'
 
-const getItems = (count = 5, offset = 0) => {
-  const array = Array.from({ length: count }, (v, k) => k).map(
-    (k) =>
-      ({
-        id: `item-${k + offset}-${new Date().getTime()}`,
-        content: `item ${k + offset}`,
-        year: faker.date.past(800).getFullYear(),
-      } as Card)
+const getItem = async (offset = 0) => {
+  const idx = offset % mockItemIDs.length
+  const response = await fetch(
+    `https://collectionapi.metmuseum.org/public/collection/v1/objects/${idx}`
   )
-
-  array.sort((a, b) => a.year - b.year)
-  return array
+  const result = await response.json().then((data: TimelineObject) => {
+    return {
+      id: data.objectID.toString(),
+      content: data.title,
+      year: data.objectBeginDate,
+    } as Card
+  })
+  return result
 }
 
 export function App() {
-  const [timeline, setTimeline] = useState(getItems(1))
-  const [placeHolder, setPlaceHolder] = useState(getItems(1, 1)[0])
+  const [timeline, setTimeline] = useState([mockCardData()])
+  const [placeHolder, setPlaceHolder] = useState(mockCardData())
   const { gameService } = useContext(GlobalStateContext)
-  // const { send } = gameService
 
   const [state] = useActor(gameService)
-  console.log(state.value)
   const handleReplay = () => {
     gameService.send('REPLAY')
   }
@@ -49,7 +51,7 @@ export function App() {
     gameService.send('VALID')
   }
 
-  const handleMove = (result: DropResult) => {
+  const handleMove = async (result: DropResult) => {
     const { source, destination } = result
     if (!destination || destination.droppableId === 'deck') {
       return
@@ -69,7 +71,7 @@ export function App() {
       handleValidMove()
       // TODO: show year
     }
-    setPlaceHolder(getItems(1, state.context.totalMoves + 2)[0])
+    setPlaceHolder(await getItem(state.context.totalMoves + 2))
   }
 
   return (
@@ -85,7 +87,6 @@ export function App() {
             <div> Lives: {state.context.lives}</div>
             <div> Streak: {state.context.streak}</div>
             <div> Total Moves: {state.context.totalMoves}</div>
-            {/* <div> Current state: {state.toStrings()}</div> */}
           </>
         )}
       </div>
