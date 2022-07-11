@@ -14,7 +14,7 @@ import { mockCardData } from './items/items'
 // import { useItems } from './model'
 
 const getItem = async (offset = 0) => {
-  const idx = offset % mockItemIDs.length
+  const idx = mockItemIDs[offset]
   const response = await fetch(
     `https://collectionapi.metmuseum.org/public/collection/v1/objects/${idx}`
   )
@@ -23,6 +23,7 @@ const getItem = async (offset = 0) => {
       id: data.objectID.toString(),
       content: data.title,
       year: data.objectBeginDate,
+      primaryImageSmall: data.primaryImageSmall,
     } as Card
   })
   return result

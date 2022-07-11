@@ -449,6 +449,7 @@ export const mockItemData = [
 export const mockCardData = () =>
   ({
     id: faker.datatype.number(10000).toString(),
-    content: faker.lorem.sentence(5),
+    content: faker.lorem.sentence(2),
     year: faker.date.past().getFullYear(),
+    primaryImageSmall: faker.image.abstract(),
   } as Card)

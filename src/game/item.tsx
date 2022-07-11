@@ -1,11 +1,19 @@
 import React from 'react'
 import { Draggable } from 'react-beautiful-dnd'
-import { Card as MuiCard } from '@mui/material'
+import {
+  Card as MuiCard,
+  CardContent,
+  CardMedia,
+  Typography,
+} from '@mui/material'
 
 export type Card = {
   id: string
   content: string
   year: number
+  primaryImage?: string
+  primaryImageSmall?: string
+  artistDisplayName?: string
 }
 
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
@@ -41,9 +49,16 @@ export const CardItem = (props: CardProps) => {
             provided.draggableProps.style
           )}
         >
-          {Card.content}
-          {' - '}
-          {Card.year}
+          <CardMedia
+            component="img"
+            height="140"
+            image={Card.primaryImageSmall}
+            alt="green iguana"
+          />
+          <CardContent>
+            <Typography>{Card.content}</Typography>
+            <Typography>{Card.year}</Typography>
+          </CardContent>
         </MuiCard>
       )}
     </Draggable>
