@@ -51,7 +51,7 @@ export const CardItem = (props: CardProps) => {
         >
           <CardMedia
             component="img"
-            height="140"
+            height="80"
             image={Card.primaryImageSmall}
             alt="green iguana"
           />

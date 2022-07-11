@@ -28,10 +28,6 @@ export const Deck = (props: DeckProps) => {
 }
 
 const deckStyle = {
-  background: 'lightgreen',
-  display: 'flex',
+  background: '#0E503E',
   padding: 8,
-  overflow: 'auto',
-
-  justifyContent: 'center',
 }

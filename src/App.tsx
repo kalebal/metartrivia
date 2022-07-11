@@ -11,6 +11,7 @@ import { Welcome } from './game/welcome'
 import { mockItemIDs } from './model'
 import { TimelineObject } from './model/api/timeline-object'
 import { mockCardData } from './items/items'
+import { Typography } from '@mui/material'
 // import { useItems } from './model'
 
 const getItem = async (offset = 0) => {
@@ -48,7 +49,6 @@ export function App() {
   }
 
   const handleValidMove = () => {
-    console.log('valid!')
     gameService.send('VALID')
   }
 
@@ -77,20 +77,22 @@ export function App() {
 
   return (
     <div className="App">
-      <header className="App-header">App</header>
-      <div className="scoreboard">
-        {state.matches('gameover') ? (
-          <GameOver onReplay={handleReplay} />
-        ) : state.matches('welcome') ? (
-          <Welcome onStart={handleStart} />
-        ) : (
-          <>
-            <div> Lives: {state.context.lives}</div>
-            <div> Streak: {state.context.streak}</div>
-            <div> Total Moves: {state.context.totalMoves}</div>
-          </>
-        )}
-      </div>
+      <header className="App-header">
+        <Typography variant="h1">App</Typography>
+        <div className="scoreboard">
+          {state.matches('gameover') ? (
+            <GameOver onReplay={handleReplay} />
+          ) : state.matches('welcome') && state.context.totalMoves === 0 ? (
+            <Welcome onStart={handleStart} />
+          ) : (
+            <>
+              <div> Lives: {state.context.lives}</div>
+              <div> Streak: {state.context.streak}</div>
+              <div> Total Moves: {state.context.totalMoves}</div>
+            </>
+          )}
+        </div>
+      </header>
       {state.context.lives && (
         <div className="board">
           <DragDropList
