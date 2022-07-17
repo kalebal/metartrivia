@@ -1,3 +1,5 @@
+import { Typography } from '@mui/material'
+import Button from '@mui/material/Button'
 import React from 'react'
 
 export type WelcomeProps = {
@@ -9,8 +11,12 @@ export const Welcome = (props: WelcomeProps) => {
 
   return (
     <div>
-      <div>Welcome!</div>
-      <button onClick={onStart}>Start</button>
+      <Typography variant="body2" sx={{ marginBottom: '16px' }}>
+        Welcome!
+      </Typography>
+      <Button variant="contained" onClick={onStart}>
+        Start
+      </Button>
     </div>
   )
 }

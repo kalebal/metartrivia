@@ -1,5 +1,5 @@
 import { createMachine, assign } from 'xstate'
-import { Card } from './item'
+import { Card } from './../model/card'
 
 interface Context {
   lives: number

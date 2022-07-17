@@ -1,6 +1,7 @@
 import { Droppable } from 'react-beautiful-dnd'
 import React from 'react'
-import { Card, CardItem } from './item'
+import { CardItem } from './card-item'
+import { Card } from './../model/card'
 import { Paper } from '@mui/material'
 
 export type DeckProps = {
@@ -15,19 +16,14 @@ export const Deck = (props: DeckProps) => {
         <Paper
           ref={provided.innerRef}
           {...provided.droppableProps}
-          elevation={2}
+          elevation={24}
         >
-          <div style={deckStyle}>
-            <CardItem Card={card} index={0} key={card.id} />
+          <div>
+            <CardItem card={card} index={0} key={card.id} />
             {provided.placeholder}
           </div>
         </Paper>
       )}
     </Droppable>
   )
-}
-
-const deckStyle = {
-  background: '#0E503E',
-  padding: 8,
 }

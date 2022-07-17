@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import './App.css'
 import { DragDropList } from './game/drag-drop-context'
 import { GameOver } from './game/game-over'
-import { Card } from './game/item'
+import { Card } from './model/card'
 import { DropResult } from 'react-beautiful-dnd'
 import { findCorrectSpot, move, reorder, validateMove } from './game/logic'
 import { useActor } from '@xstate/react'
@@ -11,8 +11,8 @@ import { Welcome } from './game/welcome'
 import { mockItemIDs } from './model'
 import { TimelineObject } from './model/api/timeline-object'
 import { mockCardData } from './items/items'
-import { Typography } from '@mui/material'
-// import { useItems } from './model'
+import { Card as MuiCard, Typography } from '@mui/material'
+import { Scoreboard } from './game/scoreboard'
 
 const getItem = async (offset = 0) => {
   const idx = mockItemIDs[offset]
@@ -21,7 +21,7 @@ const getItem = async (offset = 0) => {
   )
   const result = await response.json().then((data: TimelineObject) => {
     return {
-      id: data.objectID.toString(),
+      id: data.objectID,
       content: data.title,
       year: data.objectBeginDate,
       primaryImageSmall: data.primaryImageSmall,
@@ -32,12 +32,13 @@ const getItem = async (offset = 0) => {
 
 export function App() {
   const [timeline, setTimeline] = useState([mockCardData()])
-  const [placeHolder, setPlaceHolder] = useState(mockCardData())
+  const [placeHolder, setPlaceHolder] = useState(mockCardData(1))
   const { gameService } = useContext(GlobalStateContext)
 
   const [state] = useActor(gameService)
   const handleReplay = () => {
     gameService.send('REPLAY')
+    setTimeline([mockCardData()])
   }
 
   const handleStart = () => {
@@ -76,22 +77,27 @@ export function App() {
   }
 
   return (
-    <div className="App">
+    <div>
       <header className="App-header">
-        <Typography variant="h1">App</Typography>
-        <div className="scoreboard">
+        <Typography variant="h1" color="primary.contrastText">
+          Met Art Trivia
+        </Typography>
+        <MuiCard
+          color="secondary"
+          sx={{ margin: '16px', padding: '16px', width: '300px' }}
+        >
           {state.matches('gameover') ? (
             <GameOver onReplay={handleReplay} />
           ) : state.matches('welcome') && state.context.totalMoves === 0 ? (
             <Welcome onStart={handleStart} />
           ) : (
-            <>
-              <div> Lives: {state.context.lives}</div>
-              <div> Streak: {state.context.streak}</div>
-              <div> Total Moves: {state.context.totalMoves}</div>
-            </>
+            <Scoreboard
+              lives={state.context.lives}
+              streak={state.context.streak}
+              totalMoves={state.context.totalMoves}
+            />
           )}
-        </div>
+        </MuiCard>
       </header>
       {state.context.lives && (
         <div className="board">

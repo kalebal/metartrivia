@@ -2,7 +2,7 @@ import React from 'react'
 import { DragDropContext, DropResult } from 'react-beautiful-dnd'
 import { Deck } from './deck'
 import { Timeline } from './timeline'
-import { Card } from './item'
+import { Card } from './../model/card'
 
 export type DragDropListProps = {
   onMove: (result: DropResult) => void
@@ -19,6 +19,7 @@ export const DragDropList = (props: DragDropListProps) => {
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <Deck card={placeholderCard} />
+      <div style={{ margin: '24px' }} />
       <Timeline cards={timeline} />
     </DragDropContext>
   )

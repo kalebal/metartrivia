@@ -1,3 +1,4 @@
+import { Button, CardContent, Typography } from '@mui/material'
 import React from 'react'
 
 export type GameOverProps = {
@@ -8,9 +9,11 @@ export const GameOver = (props: GameOverProps) => {
   const { onReplay } = props
 
   return (
-    <div>
-      <div>Game Over</div>
-      <button onClick={onReplay}>Replay</button>
-    </div>
+    <CardContent>
+      <Typography>Game Over</Typography>
+      <Button onClick={onReplay} variant="contained" color="secondary">
+        Replay
+      </Button>
+    </CardContent>
   )
 }

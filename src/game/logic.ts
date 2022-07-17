@@ -1,5 +1,5 @@
 import { DraggableLocation } from 'react-beautiful-dnd'
-import { Card } from './item'
+import { Card } from './../model/card'
 
 export const validateMove = (index: number, newArray: Card[]) => {
   if (

@@ -1,7 +1,8 @@
 import { Droppable } from 'react-beautiful-dnd'
 import React from 'react'
-import { Card, CardItem } from './item'
+import { Card } from './../model/card'
 import { Paper } from '@mui/material'
+import { CardItem } from './card-item'
 
 export type TimelineProps = {
   cards: Card[]
@@ -19,7 +20,7 @@ export const Timeline = (props: TimelineProps) => {
         >
           <div className="timeline">
             {cards.map((Card: Card, index: number) => (
-              <CardItem Card={Card} index={index} key={Card.id} disableDrag />
+              <CardItem card={Card} index={index} key={Card.id} disableDrag />
             ))}
             {provided.placeholder}
           </div>

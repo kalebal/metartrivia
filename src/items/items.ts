@@ -1,6 +1,6 @@
-import { Card } from '../game/item'
-import { faker } from '@faker-js/faker'
-export const mockItemData = [
+import { TimelineObject } from '../model/api/timeline-object'
+import { Card } from '../model/card'
+export const mockItemData: TimelineObject[] = [
   {
     objectID: 2487,
     isHighlight: false,
@@ -446,10 +446,11 @@ export const mockItemData = [
     GalleryNumber: '800',
   },
 ]
-export const mockCardData = () =>
-  ({
-    id: faker.datatype.number(10000).toString(),
-    content: faker.lorem.sentence(2),
-    year: faker.date.past().getFullYear(),
-    primaryImageSmall: faker.image.abstract(),
-  } as Card)
+export const mockCardData = (i = 0) => {
+  return {
+    id: mockItemData[i].objectID,
+    content: mockItemData[i].title,
+    year: mockItemData[i].objectBeginDate,
+    primaryImageSmall: mockItemData[i].primaryImageSmall,
+  } as Card
+}
